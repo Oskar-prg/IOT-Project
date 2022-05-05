@@ -1,0 +1,13 @@
+board: eva_zm1
+specs: null
+uid: e283528ffff5e6a9f969bfed792bb1fe8ac20f3f
+version: null
+phys_id: e283528ffff5e6a9f969bfed792bb1fe8ac20f3f
+name: ZM1 Evaluation Board
+short_name: ZM1-EVA
+docs: https://docs.zerynth.com/latest/hardware/
+pinmap: https://docs.zerynth.com/latest/hardware/
+zdm:
+  workspace_id: wks-6rketiyt9mpb
+  fleet_id: flt-6rketiz0rbqo
+  device_id: dev-6wmhsi5g5fak
