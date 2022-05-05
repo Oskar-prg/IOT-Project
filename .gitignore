@@ -1,2 +1,5 @@
 
 code_board/.zerynth/project.yml
+code_board/.vscode/c_cpp_properties.json
+.DS_Store
+LCD_driver/.DS_Store
