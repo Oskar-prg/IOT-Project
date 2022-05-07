@@ -1,5 +1,4 @@
 """Provides an API for talking to HD44780 compatible character LCDs.""" 
-import time 
 class LcdApi: 
     """Implements the API for talking with HD44780 compatible character LCDs. 
     This class only knows what commands to send to the LCD, and not how to get 
@@ -167,6 +166,3 @@ class LcdApi:
         function. 
         """ 
         raise NotImplementedError 
-    def hal_sleep_us(self, usecs): 
-        """Sleep for some time (given in microseconds).""" 
-        time.sleep_us(usecs)
