@@ -25,11 +25,12 @@ for addr in i2c_scan_buf:
 
 port=i2c.I2c(i2c_scan_buf[0], i2c=I2C0, clock= 400000)
 
-write_buf = bytearray([0x80,0x03]) # powering up the device: write 80h-> COMMAND for register 0h (CONTROL);  write 3h in CONTROL
-test= port.write_read(write_buf,1) # the output of the read is the byte written in CONTROL (3)
-print('test',int(test))
+'''
+#write_buf = bytearray([0x80,0x03]) # powering up the device: write 80h-> COMMAND for register 0h (CONTROL);  write 3h in CONTROL
+#test= port.write_read(write_buf,1) # the output of the read is the byte written in CONTROL (3)
+#print('test',int(test))
 
-light0=light1=0
+light0=light1=1
 dev_id=0
 
 
@@ -39,8 +40,10 @@ port.write(write_buf3)               # and ADC integration rate at 13.7 ms
 write_buf = bytearray([0x8A]) # read the device ID Ah
 dev_id= port.write_read(write_buf,1)
 print('dev_id=%x' %(dev_id[0]))
+'''
 
 while True:
+    '''
     write_buf5 = bytearray([0x8C]) # write COMMAND (0x80) for reading ADC channel 0 (register 0x0C for LOW byte)
     data=port.write_read(write_buf5,2) # read LOW and HIGH bytes  
     light0=(data[1]<<8 | data[0]) #create a 16 bit value combining LOW (data[0]) and HIGH (data[1]) parts
@@ -50,4 +53,8 @@ while True:
     light1=(data[1]<<8 | data[0])
 
     print('ADC ch0 value= %d --- ADC ch1 value=%d' %(light0, light1))
+    '''
+    text = "hello"
+    port.write(bytearray(text.encode()), ofs=0, timeout=0)
+
     sleep(2000)
