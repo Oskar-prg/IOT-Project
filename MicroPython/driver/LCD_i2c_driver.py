@@ -5,7 +5,6 @@ from machine import I2C
 
 # Le seguenti costanti sono state prese dall'header file lcd.h
 # ma sono state cambiate da bit a maschere di bit per facilitare le operazioni
-#
 
 # definizioni dei pin per il chip PCF8574
 MASK_RS = 0x01       # P0
@@ -54,6 +53,7 @@ class I2cLcd:
         self.i2c_addr = i2c_addr
         self.i2c.writeto(self.i2c_addr, bytes([0]))
         utime.sleep_ms(20)   # Da il tempo all'LCD di accendersi
+
         # Invia il reset 3 volte (procedura standard)
         self.write_init(self.LCD_FUNCTION_RESET)
         utime.sleep_ms(5)    # Il primo delay dev'essere di almeno 4.1 msec
@@ -61,6 +61,7 @@ class I2cLcd:
         utime.sleep_ms(1)
         self.write_init(self.LCD_FUNCTION_RESET)
         utime.sleep_ms(1)
+
         # Inserisce la modalità 4-bit che ci permette di gestire l'LCD con soli 2 pin
         self.write_init(self.LCD_FUNCTION)
         utime.sleep_ms(1)
@@ -82,8 +83,7 @@ class I2cLcd:
         gc.collect()
         
     def clear(self):
-        """Pulisce lo schermo e imposta il cursore in alto a sinistra
-        """
+        """Pulisce lo schermo e imposta il cursore in alto a sinistra"""
         self.write_command(self.LCD_CLR)
         self.write_command(self.LCD_HOME)
         self.cursor_x = 0
@@ -102,8 +102,9 @@ class I2cLcd:
         self.write_command(self.LCD_ON_CTRL)
 
     def move_to(self, cursor_x, cursor_y):
-        """Sposta il cursore nella posizione indicata.
-            La posizione del cursore parte da 0 (es. cursor_x == 0 indica la prima colonna).
+        """
+        Sposta il cursore nella posizione indicata.
+        La posizione del cursore parte da 0 (es. cursor_x == 0 indica la prima colonna).
         """
         self.cursor_x = cursor_x
         self.cursor_y = cursor_y
@@ -115,13 +116,14 @@ class I2cLcd:
         self.write_command(self.LCD_DDRAM | addr)
 
     def putchar(self, char):
-        """Scrive il carattere passato sul display nella posizione del cursore attuale,
-            dopodichè avanza alla posizione successiva
+        """
+        Scrive il carattere passato sul display nella posizione del cursore attuale,
+        dopodichè avanza alla posizione successiva
         """
         if char == '\n':
             if self.implied_newline:
-                # self.implied_newline means we advanced due to a wraparound,
-                # so if we get a newline right after that we ignore it.
+                # self.implied_newline significa che siamo avanzati a causa di un \n,
+                # quindi se riceviamo una nuova riga subito dopo, la ignoriamo.
                 pass
             else:
                 self.cursor_x = self.num_columns
@@ -139,15 +141,15 @@ class I2cLcd:
     def putstr(self, string):
         """
         Scrive la stringa passata sul display partendo dalla posizione corrente
-        e fa avanzare il cursore in modo appropriato
+        e fa avanzare il cursore in modo appropriato.
         """
         for char in string:
             self.putchar(char)
 
 
     def write_init(self, setting):
-        # Writes an initialization nibble to the LCD.
-        # This particular function is only used during initialization.
+        # Scrive un particolare comando ("setting") al display LCD.
+        # Questa funzione è usata solo durante l'iniziallizzazione dell'LCD.
         byte = ((setting >> 4) & 0x0f) << SHIFT_DATA
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
         self.i2c.writeto(self.i2c_addr, bytes([byte]))
@@ -155,7 +157,7 @@ class I2cLcd:
 
         
     def write_command(self, cmd):
-        # Write a command to the LCD. Data is latched on the falling edge of E.
+        # Scrive un comando sul display LCD.
         byte = ((self.backlight << SHIFT_BACKLIGHT) |
                 (((cmd >> 4) & 0x0f) << SHIFT_DATA))
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
@@ -165,12 +167,12 @@ class I2cLcd:
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
         self.i2c.writeto(self.i2c_addr, bytes([byte]))
         if cmd <= 3:
-            # The home and clear commands require a worst case delay of 4.1 msec
+            # I comandi home e clear richiedono un ritardo nel caso peggiore di 4,1 msec.
             utime.sleep_ms(5)
         gc.collect()
 
     def write_data(self, data):
-        # Write data to the LCD. Data is latched on the falling edge of E.
+        # Scrive dati sull'LCD.
         byte = (MASK_RS |
                 (self.backlight << SHIFT_BACKLIGHT) |
                 (((data >> 4) & 0x0f) << SHIFT_DATA))
