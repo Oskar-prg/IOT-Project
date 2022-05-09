@@ -1,18 +1,13 @@
 import utime
 import gc
 
-#from lcd_api import LcdApi
 from machine import I2C
 
-# The following constant names were lifted from the avrlib lcd.h
-# header file, however, I changed the definitions from bit numbers
-# to bit masks.
+# Le seguenti costanti sono state prese dall'header file lcd.h
+# ma sono state cambiate da bit a maschere di bit per facilitare le operazioni
 #
-# HD44780 LCD controller command set
 
-
-
-# PCF8574 pin definitions
+# definizioni dei pin per il chip PCF8574
 MASK_RS = 0x01       # P0
 MASK_RW = 0x02       # P1
 MASK_E  = 0x04       # P2
@@ -22,6 +17,7 @@ SHIFT_DATA      = 4  # P4-P7
 
 class I2cLcd:
     
+    # set di comandi del controller lcd HD44780
     LCD_CLR = 0x01              # DB0: clear display
     LCD_HOME = 0x02             # DB1: return to home position
 
@@ -52,69 +48,62 @@ class I2cLcd:
 
     LCD_RW_WRITE = 0
     LCD_RW_READ = 1
-    
-    #Implements a HD44780 character LCD connected via PCF8574 on I2C
 
     def __init__(self, i2c, i2c_addr, num_lines, num_columns):
         self.i2c = i2c
         self.i2c_addr = i2c_addr
         self.i2c.writeto(self.i2c_addr, bytes([0]))
-        utime.sleep_ms(20)   # Allow LCD time to powerup
-        # Send reset 3 times
-        self.hal_write_init_nibble(self.LCD_FUNCTION_RESET)
-        utime.sleep_ms(5)    # Need to delay at least 4.1 msec
-        self.hal_write_init_nibble(self.LCD_FUNCTION_RESET)
+        utime.sleep_ms(20)   # Da il tempo all'LCD di accendersi
+        # Invia il reset 3 volte (procedura standard)
+        self.write_init(self.LCD_FUNCTION_RESET)
+        utime.sleep_ms(5)    # Il primo delay dev'essere di almeno 4.1 msec
+        self.write_init(self.LCD_FUNCTION_RESET)
         utime.sleep_ms(1)
-        self.hal_write_init_nibble(self.LCD_FUNCTION_RESET)
+        self.write_init(self.LCD_FUNCTION_RESET)
         utime.sleep_ms(1)
-        # Put LCD into 4-bit mode
-        self.hal_write_init_nibble(self.LCD_FUNCTION)
+        # Inserisce la modalità 4-bit che ci permette di gestire l'LCD con soli 2 pin
+        self.write_init(self.LCD_FUNCTION)
         utime.sleep_ms(1)
         
         self.num_lines = num_lines
-        if self.num_lines > 4:
-            self.num_lines = 4
         self.num_columns = num_columns
-        if self.num_columns > 40:
-            self.num_columns = 40
         self.cursor_x = 0
         self.cursor_y = 0
         self.implied_newline = False
         self.backlight = True
         self.clear()
-        self.hal_write_command(self.LCD_ENTRY_MODE | self.LCD_ENTRY_INC)
+        self.write_command(self.LCD_ENTRY_MODE | self.LCD_ENTRY_INC)
         self.hide_cursor()
         
         cmd = self.LCD_FUNCTION
         if num_lines > 1:
             cmd |= self.LCD_FUNCTION_2LINES
-        self.hal_write_command(cmd)
+        self.write_command(cmd)
         gc.collect()
         
     def clear(self):
-        """Clears the LCD display and moves the cursor to the top left
-        corner.
+        """Pulisce lo schermo e imposta il cursore in alto a sinistra
         """
-        self.hal_write_command(self.LCD_CLR)
-        self.hal_write_command(self.LCD_HOME)
+        self.write_command(self.LCD_CLR)
+        self.write_command(self.LCD_HOME)
         self.cursor_x = 0
         self.cursor_y = 0
 
     def hide_cursor(self):
-        """Causes the cursor to be hidden."""
-        self.hal_write_command(self.LCD_ON_CTRL | self.LCD_ON_DISPLAY)
+        """Nasconde il cursore"""
+        self.write_command(self.LCD_ON_CTRL | self.LCD_ON_DISPLAY)
 
     def display_on(self):
-        """Turns on (i.e. unblanks) the LCD."""
-        self.hal_write_command(self.LCD_ON_CTRL | self.LCD_ON_DISPLAY)
+        """Accende l'LCD."""
+        self.write_command(self.LCD_ON_CTRL | self.LCD_ON_DISPLAY)
 
     def display_off(self):
-        """Turns off (i.e. blanks) the LCD."""
-        self.hal_write_command(self.LCD_ON_CTRL)
+        """Spegne l'LCD."""
+        self.write_command(self.LCD_ON_CTRL)
 
     def move_to(self, cursor_x, cursor_y):
-        """Moves the cursor position to the indicated position. The cursor
-        position is zero based (i.e. cursor_x == 0 indicates first column).
+        """Sposta il cursore nella posizione indicata.
+            La posizione del cursore parte da 0 (es. cursor_x == 0 indica la prima colonna).
         """
         self.cursor_x = cursor_x
         self.cursor_y = cursor_y
@@ -123,11 +112,11 @@ class I2cLcd:
             addr += 0x40    # Lines 1 & 3 add 0x40
         if cursor_y & 2:    # Lines 2 & 3 add number of columns
             addr += self.num_columns
-        self.hal_write_command(self.LCD_DDRAM | addr)
+        self.write_command(self.LCD_DDRAM | addr)
 
     def putchar(self, char):
-        """Writes the indicated character to the LCD at the current cursor
-        position, and advances the cursor by one position.
+        """Scrive il carattere passato sul display nella posizione del cursore attuale,
+            dopodichè avanza alla posizione successiva
         """
         if char == '\n':
             if self.implied_newline:
@@ -137,7 +126,7 @@ class I2cLcd:
             else:
                 self.cursor_x = self.num_columns
         else:
-            self.hal_write_data(ord(char))
+            self.write_data(ord(char))
             self.cursor_x += 1
         if self.cursor_x >= self.num_columns:
             self.cursor_x = 0
@@ -148,23 +137,24 @@ class I2cLcd:
         self.move_to(self.cursor_x, self.cursor_y)
 
     def putstr(self, string):
-        """Write the indicated string to the LCD at the current cursor
-        position and advances the cursor position appropriately.
+        """
+        Scrive la stringa passata sul display partendo dalla posizione corrente
+        e fa avanzare il cursore in modo appropriato
         """
         for char in string:
             self.putchar(char)
 
 
-    def hal_write_init_nibble(self, nibble):
+    def write_init(self, setting):
         # Writes an initialization nibble to the LCD.
         # This particular function is only used during initialization.
-        byte = ((nibble >> 4) & 0x0f) << SHIFT_DATA
+        byte = ((setting >> 4) & 0x0f) << SHIFT_DATA
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
         self.i2c.writeto(self.i2c_addr, bytes([byte]))
         gc.collect()
 
         
-    def hal_write_command(self, cmd):
+    def write_command(self, cmd):
         # Write a command to the LCD. Data is latched on the falling edge of E.
         byte = ((self.backlight << SHIFT_BACKLIGHT) |
                 (((cmd >> 4) & 0x0f) << SHIFT_DATA))
@@ -179,7 +169,7 @@ class I2cLcd:
             utime.sleep_ms(5)
         gc.collect()
 
-    def hal_write_data(self, data):
+    def write_data(self, data):
         # Write data to the LCD. Data is latched on the falling edge of E.
         byte = (MASK_RS |
                 (self.backlight << SHIFT_BACKLIGHT) |
@@ -188,7 +178,7 @@ class I2cLcd:
         self.i2c.writeto(self.i2c_addr, bytes([byte]))
         byte = (MASK_RS |
                 (self.backlight << SHIFT_BACKLIGHT) |
-                ((data & 0x0f) << SHIFT_DATA))      
+                ((data & 0x0f) << SHIFT_DATA))
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
         self.i2c.writeto(self.i2c_addr, bytes([byte]))
         gc.collect()
