@@ -14,23 +14,53 @@ lcd = I2cLcd(i2c, I2C_ADDR, totalRows, totalColumns)
 d = Device()
 
 def mainLoop():
+    fromConnecting = True
+    lcd.putstr("Welcome to \nPassChain")
+    sleep(2)
     while True:
+        print(fromConnecting)
         if d.isConnected():
-            lcd.putstr("Welcome to \nPassChain")
+            if fromConnecting:
+                connectedBle()
+                fromConnecting = False
             sleep(2)
             lcd.clear()
-            lcd.putstr("Lets Countdown")
-            sleep(2)
-            lcd.clear()
-            for i in range(11):
-                lcd.putstr(str(10 - i))
-                d.send_string(str(10 - i))
-                sleep(1)
-                lcd.clear()
+#             for i in range(11):
+#                 lcd.putstr(str(10 - i))
+#                 d.send_string(str(10 - i))
+#                 sleep(1)
+#                 lcd.clear()
         else:
             d.advertise()
+            connectingBle()
+            fromConnecting = True
             sleep(2)
+            
         
+def connectingBle():
+    lcd.clear()
+    lcd.putstr("Connecting.")
+    print("connecting.")
+    time.sleep_ms(250)
+    lcd.putstr(".")
+    print(".")
+    time.sleep_ms(250)
+    lcd.putstr(".")
+    print(".")
+    time.sleep_ms(250)
+    lcd.putstr(".")
+    print(".")
+    time.sleep_ms(250)
+    return
+
+def connectedBle():
+    lcd.clear()
+    lcd.putstr("The device is\n")
+    print("The device is\n")
+    print("connected!")
+    lcd.putstr("connected !")
+    time.sleep_ms(250)
+    return
 
 if __name__ == "__main__":
     mainLoop()
