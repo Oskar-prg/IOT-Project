@@ -31,10 +31,12 @@ class MQTTClient:
         self.lw_retain = False
 
     def _send_str(self, s):
+        print("_send_str")
         self.sock.write(struct.pack("!H", len(s)))
         self.sock.write(s)
 
     def _recv_len(self):
+        print("_recv_len")
         n = 0
         sh = 0
         while 1:
@@ -45,9 +47,11 @@ class MQTTClient:
             sh += 7
 
     def set_callback(self, f):
+        print("set_callback")
         self.cb = f
 
     def set_last_will(self, topic, msg, retain=False, qos=0):
+        print("set_last_will")
         assert 0 <= qos <= 2
         assert topic
         self.lw_topic = topic
@@ -56,6 +60,7 @@ class MQTTClient:
         self.lw_retain = retain
 
     def connect(self, clean_session=True):
+        print("connect")
         self.sock = socket.socket()
         addr = socket.getaddrinfo(self.server, self.port)[0][-1]
         self.sock.connect(addr)
@@ -103,13 +108,16 @@ class MQTTClient:
         return resp[2] & 1
 
     def disconnect(self):
+        print("disconnect")
         self.sock.write(b"\xe0\0")
         self.sock.close()
 
     def ping(self):
+        print("ping")
         self.sock.write(b"\xc0\0")
 
     def publish(self, topic, msg, retain=False, qos=0):
+        print("publish")
         pkt = bytearray(b"\x30\0\0\0")
         pkt[0] |= qos << 1 | retain
         sz = 2 + len(topic) + len(msg)
@@ -145,6 +153,7 @@ class MQTTClient:
             assert 0
 
     def subscribe(self, topic, qos=0):
+        print("subscribe")
         assert self.cb is not None, "Subscribe callback is not set"
         pkt = bytearray(b"\x82\0\0\0")
         self.pid += 1
@@ -185,16 +194,23 @@ class MQTTClient:
         topic_len = self.sock.read(2)
         topic_len = (topic_len[0] << 8) | topic_len[1]
         topic = self.sock.read(topic_len)
+        
         sz -= topic_len + 2
         if op & 6:
             pid = self.sock.read(2)
             pid = pid[0] << 8 | pid[1]
             sz -= 2
         msg = self.sock.read(sz)
+        
+        
         self.cb(topic, msg)
+        #quiiiiiiiiiiiiiii
+        print(msg)
+    
         if op & 6 == 2:
             pkt = bytearray(b"\x40\x02\0\0")
             struct.pack_into("!H", pkt, 2, pid)
+            print(str(pkt))
             self.sock.write(pkt)
         elif op & 6 == 4:
             assert 0
@@ -203,5 +219,6 @@ class MQTTClient:
     # If not, returns immediately with None. Otherwise, does
     # the same processing as wait_msg.
     def check_msg(self):
+        print("check_msg")
         self.sock.setblocking(False)
         return self.wait_msg()
