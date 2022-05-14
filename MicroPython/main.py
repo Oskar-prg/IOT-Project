@@ -7,20 +7,20 @@ from simpleKeyboard import Device
 from binascii import hexlify
 import json
 
+# LCD setup
 I2C_ADDR = 0x27
 totalRows = 2
 totalColumns = 16
 
 i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=10000)     #initializing the I2C method for ESP32
 lcd = I2cLcd(i2c, I2C_ADDR, totalRows, totalColumns)
+
+# BLE setup
 d = Device()
 
-#Keypad setup
+# Keypad setup
 KEY_UP   = const(0)
 KEY_DOWN = const(1)
-#Albe const
-HIGH = const(1)
-LOW = const(0)
 
 buttonDown = 'B'
 buttonUp = 'A'
@@ -37,37 +37,13 @@ row_pins = [Pin(pin_name, mode=Pin.OUT) for pin_name in rows]
 # set pins for cols as inputs
 col_pins = [Pin(pin_name, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_name in cols]
 
-#Buzzer setup
+# Buzzer setup
 buzzer = PWM(Pin(19), freq=440, duty=512)
 
+# message of MQTT
 last_message = b''
+
 # Complete project details at https://RandomNerdTutorials.com
-
-def sub_cb(topic, msg):
-    global last_message
-    print((topic, msg))
-    
-    last_message = msg
-    if topic == b'notification' and msg == b'received':
-        print('ESP received hello message')
-
-def connect_and_subscribe():
-  global client_id, mqtt_server, topic_sub
-  client = MQTTClient(client_id, mqtt_server)
-  client.set_callback(sub_cb)
-  client.connect()
-  client.subscribe(topic_sub)
-  print('Connected to %s MQTT broker, subscribed to %s topic' % (mqtt_server, topic_sub))
-  return client
-
-def restart_and_reconnect():
-  print('Failed to connect to MQTT broker. Reconnecting...')
-  time.sleep(10)
-  machine.reset()
-
-
-
-
         
 #     if (time.time() - last_message) > message_interval:
 #       msg = b'Hello #%d' % counter
@@ -92,7 +68,6 @@ def restart_and_reconnect():
 #                 lcd.putstr("Inserisci pin:\n")
 #                 askPin = False
 
-
 def mainLoop():
     data = load_r_credentialsFile()
     fromConnecting = True
@@ -106,12 +81,10 @@ def mainLoop():
                 sleep(2)
                 fromConnecting = False
                 
-        
             lcd.clear()
             select = menuList(data);
             lcd.clear()
             
-            backButton = False
             lcd.putstr("> Username: ****")
             lcd.move_to(0,1)
             lcd.putstr("> Password: ****")
@@ -121,8 +94,7 @@ def mainLoop():
                     break
                 
                 direction = read_keypad()
-                #time.sleep_ms(160)
-                
+
                 if direction == 'D':
                     break
     
@@ -144,7 +116,6 @@ def mainLoop():
                     lcd.move_to(0,1)
                     lcd.putstr("> Password: ****")
                     
-        
                 if direction == buttonUp:
                     lcd.clear()
                     lcd.putstr("Writing")
@@ -162,8 +133,6 @@ def mainLoop():
                     lcd.putstr("> Username: ****")
                     lcd.move_to(0,1)
                     lcd.putstr("> Password: ****")
-                    
-                
             
         else:
             d.advertise()
@@ -171,7 +140,8 @@ def mainLoop():
             fromConnecting = True
             sleep(2)
             
-        
+
+# BLE functions
 def connectingBle():
     lcd.clear()
     lcd.putstr("Connecting.")
@@ -197,8 +167,8 @@ def connectedBle():
     time.sleep_ms(250)
     return
 
-#Keypad functions
 
+# Keypad functions
 def init():
     for row in range(0,4):
         for col in range(0,4):
@@ -221,17 +191,25 @@ def scan(row, col):
     # return the key state
     return key
 
+def read_keypad():
+    last_key_press = None
+    for row in range(4):
+        for col in range(4):
+            key = scan(row, col)
+            if key == KEY_DOWN:
+                print("Key Pressed", keys[row][col])
+                last_key_press = keys[row][col]
+    return last_key_press
 
-#Funzioni Json
+
+# Json functions
 def load_r_credentialsFile():
    with open('credentials.json') as credentials:
        return json.load(credentials)
  
- 
 def load_w_credentialsFile(data):
     with open("credentials.json", "w") as credentials:
         json.dump(data, credentials) 
- 
  
 def write_credentialsFile(data, name, username, password):
     if name is not None and not name:
@@ -246,7 +224,6 @@ def write_credentialsFile(data, name, username, password):
                 return True
     return False
   
- 
 def update_credentialsFile(data, name, newName, username, password):
     if name is not None and not name:
         for i in range(0, len(data['credentials'])):
@@ -265,7 +242,6 @@ def update_credentialsFile(data, name, newName, username, password):
                 return True
     return False
  
- 
 def remove_credentialsFile(data, name):
     if name is not None and not name:
         for i in range(0, len(data['credentials'])):
@@ -276,17 +252,16 @@ def remove_credentialsFile(data, name):
                 return True
     return False
 
-#menu
+
+# menu credentials list
 def menuList(data):
     pos = 0
     lcd.putstr("Authentication")
     lcd.move_to(0,1)
     lcd.putstr('> ' + data['credentials'][pos]['name'])
-    while(True):
-        
-        
+
+    while(True): 
         direction = read_keypad()
-        #time.sleep_ms(160)
         
         if(direction == buttonDown) and (pos + 1 < len(data['credentials'])):
             lcd.clear()
@@ -294,7 +269,6 @@ def menuList(data):
             lcd.move_to(0,1)
             pos += 1
             lcd.putstr('> ' + data['credentials'][pos]['name'])
-            
         
         if (direction == buttonUp) and (pos - 1 >= 0):
             lcd.clear()
@@ -310,21 +284,11 @@ def menuList(data):
             lcd.move_to(0,1)
             lcd.putstr('> ' + data['credentials'][pos]['name'])
         
-        #if tastierino ritorna pos
         if read_keypad() == 'C':
             return pos
 
-def read_keypad():
-    last_key_press = None
-    for row in range(4):
-        for col in range(4):
-            key = scan(row, col)
-            if key == KEY_DOWN:
-                print("Key Pressed", keys[row][col])
-                last_key_press = keys[row][col]
-                #lcd.putstr(str(last_key_press))
-    return last_key_press
 
+# MQTT functions
 def mqtt_connection():
     global last_message
     lcd.clear()
@@ -355,10 +319,29 @@ def mqtt_connection():
         if direction == 'D':
             client.disconnect()
             return
-            
+
+def sub_cb(topic, msg):
+    global last_message
+    print((topic, msg))
+    
+    last_message = msg
+    if topic == b'notification' and msg == b'received':
+        print('ESP received hello message')
+
+def connect_and_subscribe():
+  global client_id, mqtt_server, topic_sub
+  client = MQTTClient(client_id, mqtt_server)
+  client.set_callback(sub_cb)
+  client.connect()
+  client.subscribe(topic_sub)
+  print('Connected to %s MQTT broker, subscribed to %s topic' % (mqtt_server, topic_sub))
+  return client
+
+def restart_and_reconnect():
+  print('Failed to connect to MQTT broker. Reconnecting...')
+  time.sleep(10)
+  machine.reset()      
         
-    
-    
 
 if __name__ == "__main__":
     mainLoop()

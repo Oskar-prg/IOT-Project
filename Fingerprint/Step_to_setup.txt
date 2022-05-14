@@ -1,4 +1,0 @@
-1) Installare la libreria
-sudo pip3 install adafruit-circuitpython-fingerprint 
-
-3)Esegurie il file di esempio --> fingerprint_simpletest.py
