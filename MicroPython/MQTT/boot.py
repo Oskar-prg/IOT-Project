@@ -11,9 +11,9 @@ esp.osdebug(None)
 import gc
 gc.collect()
 
-ssid = 'TIM-20128173'
-password = 'KinderCards'
-mqtt_server = '192.168.1.156'
+ssid = 'Username'
+password = 'Password'
+mqtt_server = 'IP_adress'
 #EXAMPLE IP ADDRESS
 #mqtt_server = '192.168.1.144'
 client_id = ubinascii.hexlify(machine.unique_id())
