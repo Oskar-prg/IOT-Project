@@ -2,16 +2,15 @@ import machine
 from machine import Pin, SoftI2C, PWM
 import time
 from time import sleep
-from LCD_i2c_driver import I2cLcd
 from simpleKeyboard import Device
 from binascii import hexlify
 
-I2C_ADDR = 0x27
+#I2C_ADDR = 0x27
 totalRows = 2
 totalColumns = 16
 
-i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=10000)     #initializing the I2C method for ESP32
-lcd = I2cLcd(i2c, I2C_ADDR, totalRows, totalColumns)
+#i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=10000)     #initializing the I2C method for ESP32
+#lcd = I2cLcd(i2c, I2C_ADDR, totalRows, totalColumns)
 d = Device()
 
 #Keypad setup
@@ -36,7 +35,9 @@ buzzer = PWM(Pin(19), freq=440, duty=512)
 
 # Complete project details at https://RandomNerdTutorials.com
 
+#quiiiiiiiiiiiiiiiiii
 def sub_cb(topic, msg):
+    print(msg + "1")
     global last_message
     print((topic, msg))
     last_message = msg
@@ -66,9 +67,6 @@ while True:
   try:
     new_msg = client.check_msg()
     
-    
-    print(last_message)
-    
     sleep(1)
         
 #     if (time.time() - last_message) > message_interval:
@@ -83,7 +81,7 @@ while True:
 def mainLoop():
     fromConnecting = True
     askPin = True
-    lcd.putstr("Welcome to \nPassChain")
+    #lcd.putstr("Welcome to \nPassChain")
     init()
     sleep(2)
     while True:
@@ -92,11 +90,11 @@ def mainLoop():
                 connectedBle()
                 fromConnecting = False
                 sleep(2)
-                lcd.clear()
+                #lcd.clear()
             
             if askPin:
-                lcd.clear()
-                lcd.putstr("Inserisci pin:\n")
+                #lcd.clear()
+                #lcd.putstr("Inserisci pin:\n")
                 askPin = False
             
             for row in range(4):
@@ -105,7 +103,7 @@ def mainLoop():
                     if key == KEY_DOWN:
                         print("Key Pressed", keys[row][col])
                         last_key_press = keys[row][col]
-                        lcd.putstr(str(last_key_press))
+                        #lcd.putstr(str(last_key_press))
                         time.sleep_ms(500)
 #             for i in range(11):
 #                 lcd.putstr(str(10 - i))
@@ -118,7 +116,7 @@ def mainLoop():
             fromConnecting = True
             sleep(2)
             
-        
+'''      
 def connectingBle():
     lcd.clear()
     lcd.putstr("Connecting.")
@@ -143,7 +141,7 @@ def connectedBle():
     lcd.putstr("connected !")
     time.sleep_ms(250)
     return
-
+'''
 #Keypad functions
 
 def init():

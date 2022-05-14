@@ -10,10 +10,11 @@ led = DigitalInOut(board.D13)
 led.direction = Direction.OUTPUT
 
 uart = busio.UART(board.TX, board.RX, baudrate=57600)
+#uart = UART.init(baudrate=57600, bits=8, parity=None, stop=1, tx=1, rx=3)
 
 # If using with a computer such as Linux/RaspberryPi, Mac, Windows with USB/serial converter:
-# import serial
-# uart = serial.Serial("/dev/ttyUSB0", baudrate=57600, timeout=1)
+#import serial
+#uart = serial.Serial("/dev/cu.usbserial-0001", baudrate=57600, timeout=1)
 # If using with Linux/Raspberry Pi and hardware UART:
 # import serial
 # uart = serial.Serial("/dev/ttyS0", baudrate=57600, timeout=1)
@@ -23,7 +24,8 @@ finger = adafruit_fingerprint.Adafruit_Fingerprint(uart)
 ##################################################
 
 def get_fingerprint():
-	"""Get a finger print image, template it, and see if it matches!""" print("Waiting for image...")
+	"""Get a finger print image, template it, and see if it matches!"""
+	print("Waiting for image...")
 	while finger.get_image() != adafruit_fingerprint.OK:
 		pass
 	print("Templating...")
@@ -38,7 +40,8 @@ def get_fingerprint():
 # pylint: disable=too-many-branches
 def get_fingerprint_detail():
 	"""Get a finger print image, template it, and see if it matches!
-	This time, print out each error instead of just returning on failure""" print("Getting image...", end="", flush=True)
+	This time, print out each error instead of just returning on failure"""
+	print("Getting image...", end="", flush=True)
 	i = finger.get_image()
 	if i == adafruit_fingerprint.OK:
 		print("Image taken") 
@@ -69,7 +72,8 @@ def get_fingerprint_detail():
 	print("Searching...", end="", flush=True)
 	i = finger.finger_fast_search()
 	# pylint: disable=no-else-return
-	# This block needs to be refactored when it can be tested. if i == adafruit_fingerprint.OK:
+	# This block needs to be refactored when it can be tested.
+	if i == adafruit_fingerprint.OK:
 		print("Found fingerprint!")
 		return True 
 	else:
@@ -167,7 +171,9 @@ def get_num():
 while True:
 	print("----------------")
 	if finger.read_templates() != adafruit_fingerprint.OK:
-		raise RuntimeError("Failed to read templates") print("Fingerprint templates:", finger.templates) print("e) enroll print")
+		raise RuntimeError("Failed to read templates")
+	print("Fingerprint templates:", finger.templates)
+	print("e) enroll print")
 	print("f) find print")
 	print("d) delete print") 
 	print("----------------") 
