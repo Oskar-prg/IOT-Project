@@ -2,6 +2,7 @@ module it.unisa.passchain {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.fazecast.jSerialComm;
+    requires org.eclipse.paho.client.mqttv3;
 
 
     opens it.unisa.passchain to javafx.fxml;

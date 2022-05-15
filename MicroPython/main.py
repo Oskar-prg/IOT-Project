@@ -70,6 +70,7 @@ last_message = b''
 
 def mainLoop():
     data = load_r_credentialsFile()
+    print(data)
     fromConnecting = True
     lcd.putstr("Welcome to \nPassChain")
     sleep(2)
@@ -102,17 +103,20 @@ def mainLoop():
                 lcd.move_to(0,1)
                 lcd.putstr(pinCode)
 
-                if direction == 'C' and pinCode is data['pin']:
-                    break
-                else:
-                    lcd.clear()
-                    lcd.putstr('Wrong pin!')
-                    lcd.move_to(0,1)
-                    lcd.putstr("Try again.")
-                    sleep(2)
-                    lcd.clear()
-                    lcd.putstr("Insert pin code:")
-                    pinCode = ''
+                if direction == 'C':
+                    if pinCode == data['pin']:
+                        break
+                    else:
+                        lcd.clear()
+                        lcd.putstr('Wrong pin!')
+                        lcd.move_to(0,1)
+                        lcd.putstr("Try again.")
+                        sleep(2)
+                        lcd.clear()
+                        lcd.putstr("Insert pin code:")
+                        pinCode = ''
+                
+                time.sleep_ms(160)
 
             if direction == 'D':
                 continue
