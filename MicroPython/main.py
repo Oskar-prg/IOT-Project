@@ -82,15 +82,47 @@ def mainLoop():
                 fromConnecting = False
                 
             lcd.clear()
-            select = menuList(data);
+            select = menuList(data)
             lcd.clear()
+
+            lcd.putstr("Insert pin code:")
+            lcd.move_to(0,1)
+            pinCode = ''
+            direction = ''
+
+            while True:
+                direction = read_keypad()
+
+                if direction == 'D':
+                    break
+
+                if direction is not None and direction != 'C':
+                    pinCode += direction
+
+                lcd.move_to(0,1)
+                lcd.putstr(pinCode)
+
+                if direction == 'C' and pinCode is data['pin']:
+                    break
+                else:
+                    lcd.clear()
+                    lcd.putstr('Wrong pin!')
+                    lcd.move_to(0,1)
+                    lcd.putstr("Try again.")
+                    sleep(2)
+                    lcd.clear()
+                    lcd.putstr("Insert pin code:")
+                    pinCode = ''
+
+            if direction == 'D':
+                continue
             
             lcd.putstr("> Username: ****")
             lcd.move_to(0,1)
             lcd.putstr("> Password: ****")
             
             while True:
-                if(not d.isConnected()):
+                if not d.isConnected():
                     break
                 
                 direction = read_keypad()
