@@ -18,10 +18,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ControllerUpdate implements Initializable {
-
+public class ControllerPinCode implements Initializable {
+    private final char[] chart = {'D', 'E', 'F', 'G', 'H', 'I', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'Z', 'J', 'K', 'Y', 'X', 'W', 'd', 'e', 'f', 'g', 'h',
+    'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z', 'j', 'k', 'y', 'x',
+    'w', '|', '\'', '\\', '!', '?', 'ì', '(', '^', '(', '"', '£', '$', '%', '&', '/', '=',
+    '#', 'à', '+', '*', '-', 'è', 'é', 'ç', 'ò', '@', '°', 'ù', '§', ':', '.', ',', ';',
+    '_'};
     @FXML
-    private TextField oldName, webName, username, password;
+    private TextField oldpin, newpin;
 
     @FXML
     private TextArea txtArea;
@@ -38,7 +43,7 @@ public class ControllerUpdate implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Design.setSidebar(panel1, panel2, menu);
-        Design.setCredentials(oldName, webName, username, password);
+        Design.setCredentials(oldpin, newpin, null, null);
         Design.textAreaNotEditable(txtArea);
         Design.fillTextArea(txtArea);
         errorMsg.setOpacity(0);
@@ -80,32 +85,24 @@ public class ControllerUpdate implements Initializable {
     }
 
     @FXML
-    private void updateCredential() throws MqttException {
-        if (oldName.getText() != null && !oldName.getText().isBlank())
-            if (webName.getText() != null && !webName.getText().isBlank())
-                if (password.getText() != null && !password.getText().isBlank())
-                    if (username.getText() != null && !username.getText().isBlank()) {
-                        errorMsg.setOpacity(0);
-                        CredentialsList credentialsList = new CredentialsList();
-                        int pos = credentialsList.searchCredential(oldName.getText());
-
-                        if (pos != -1){
-                            Credential credential = new Credential(webName.getText(), username.getText(), password.getText());
-                            credentialsList.setList(pos, credential);
-                            Design.fillTextArea(txtArea);
-
-                            MQTT_comunication.publish("01" + oldName.getText() + ","
-                                    + webName.getText() + "," + username.getText() + "," +
-                                    password.getText());
-
-                            errorMsg.setOpacity(0);
-                        } else {
-                            errorMsg.setText("Credenziale non trovata.");
+    private void updatePin() throws MqttException {
+        if (oldpin.getText() != null && !oldpin.getText().isBlank())
+            if (newpin.getText() != null && !newpin.getText().isBlank()){
+                errorMsg.setOpacity(0);
+                if (oldpin.getText().length() == 10 && !oldpin.getText().isBlank()) {
+                    for (char c : chart) {
+                        if (oldpin.getText().contains(String.valueOf(c))) {
                             errorMsg.setOpacity(1);
+                            return;
                         }
-                        return;
                     }
-        errorMsg.setText("Riempi tutti i campi.");
+                    MyCallback.updatePin(oldpin.getText(), newpin.getText());
+                    MQTT_comunication.publish("03" + newpin.getText());
+                }
+                else
+                    errorMsg.setOpacity(1);
+            }
         errorMsg.setOpacity(1);
     }
+
 }

@@ -3,7 +3,7 @@ module it.unisa.passchain {
     requires javafx.fxml;
     requires com.fazecast.jSerialComm;
     requires org.eclipse.paho.client.mqttv3;
-
+    requires org.json;
 
     opens it.unisa.passchain to javafx.fxml;
     exports it.unisa.passchain;

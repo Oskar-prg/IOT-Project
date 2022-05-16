@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ControllerUpdate implements Initializable {
+public class ControllerRemove implements Initializable {
 
     @FXML
-    private TextField oldName, webName, username, password;
+    private TextField name;
 
     @FXML
     private TextArea txtArea;
@@ -38,7 +38,7 @@ public class ControllerUpdate implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Design.setSidebar(panel1, panel2, menu);
-        Design.setCredentials(oldName, webName, username, password);
+        Design.setCredentials(null, name, null, null);
         Design.textAreaNotEditable(txtArea);
         Design.fillTextArea(txtArea);
         errorMsg.setOpacity(0);
@@ -80,32 +80,22 @@ public class ControllerUpdate implements Initializable {
     }
 
     @FXML
-    private void updateCredential() throws MqttException {
-        if (oldName.getText() != null && !oldName.getText().isBlank())
-            if (webName.getText() != null && !webName.getText().isBlank())
-                if (password.getText() != null && !password.getText().isBlank())
-                    if (username.getText() != null && !username.getText().isBlank()) {
-                        errorMsg.setOpacity(0);
-                        CredentialsList credentialsList = new CredentialsList();
-                        int pos = credentialsList.searchCredential(oldName.getText());
+    private void removeCredential() throws MqttException {
+        if (name.getText() != null && !name.getText().isEmpty()){
+            errorMsg.setOpacity(0);
+            CredentialsList credentialsList = new CredentialsList();
+            int pos = credentialsList.searchCredential(name.getText());
 
-                        if (pos != -1){
-                            Credential credential = new Credential(webName.getText(), username.getText(), password.getText());
-                            credentialsList.setList(pos, credential);
-                            Design.fillTextArea(txtArea);
-
-                            MQTT_comunication.publish("01" + oldName.getText() + ","
-                                    + webName.getText() + "," + username.getText() + "," +
-                                    password.getText());
-
-                            errorMsg.setOpacity(0);
-                        } else {
-                            errorMsg.setText("Credenziale non trovata.");
-                            errorMsg.setOpacity(1);
-                        }
-                        return;
-                    }
-        errorMsg.setText("Riempi tutti i campi.");
-        errorMsg.setOpacity(1);
+            if (pos != -1){
+                credentialsList.remove(pos);
+                Design.fillTextArea(txtArea);
+                MQTT_comunication.publish("02" + name.getText());
+                errorMsg.setOpacity(0);
+            } else {
+                errorMsg.setText("Credenziale non trovata.");
+                errorMsg.setOpacity(1);
+            }
+        }
+        else errorMsg.setOpacity(1);
     }
 }

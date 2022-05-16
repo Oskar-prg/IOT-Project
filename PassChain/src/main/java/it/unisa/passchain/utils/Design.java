@@ -2,15 +2,17 @@ package it.unisa.passchain.utils;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
+import java.net.UnknownHostException;
 
 public class Design {
 
@@ -53,25 +55,77 @@ public class Design {
         });
     }
 
-    public static void setCredentials(TextField webName, TextField username, TextField password) {
-        webName.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
-                "-fx-text-fill: white; ");
-        webName.setPromptText("Name Application");
+    public static void setCredentials(TextField oldName, TextField webName, TextField username, TextField password) {
+        if (oldName != null){
+            oldName.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
+                    "-fx-text-fill: white; ");
+            oldName.setPromptText("Old name Application");
+        }
 
-        username.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
+        if (webName != null){
+            webName.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
+                    "-fx-text-fill: white; ");
+            webName.setPromptText("Name Application");
+        }
 
-                "-fx-text-fill: white; ");
-        username.setPromptText("Username");
+        if (username != null){
+            username.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
 
-        password.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
+                    "-fx-text-fill: white; ");
+            username.setPromptText("Username");
+        }
 
-                "-fx-text-fill: white; ");
-        password.setPromptText("Password");
+        if (password != null){
+            password.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
+
+                    "-fx-text-fill: white; ");
+            password.setPromptText("Password");
+        }
     }
 
     public static void textAreaNotEditable(TextArea txtArea) {
         txtArea.setEditable(false);
-        txtArea.setMouseTransparent(true);
         txtArea.setFocusTraversable(false);
+        txtArea.textProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> observable, Object oldValue,
+                                Object newValue) {
+                txtArea.setScrollTop(Double.MAX_VALUE);
+            }
+        });
+    }
+
+    public static void fillTextArea(TextArea txtArea){
+        CredentialsList credentialsList = new CredentialsList();
+        txtArea.setText("");
+        for (Credential c: credentialsList.getCredentials()) {
+            txtArea.appendText("Nome: " + c.getName() + "\n");
+            txtArea.appendText("Username: " + c.getUsername() + "\n");
+            txtArea.appendText("Password: " + c.getPassword() + "\n\n");
+        }
+    }
+
+    public static void connect(Text connected, Text notConnected) {
+        if (MQTT_comunication.isConnected()) {
+            connected.setText("Connessione PassChain riuscita.");
+            connected.setOpacity(1);
+            notConnected.setOpacity(0);
+        }
+        else {
+            try {
+                MQTT_comunication.connect();
+            } catch (MqttException | UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+            if (MQTT_comunication.isConnected()) {
+                connected.setText("Connessione PassChain riuscita.");
+                connected.setOpacity(1);
+                notConnected.setOpacity(0);
+            } else{
+                notConnected.setText("ERROR: server MQTT.");
+                connected.setOpacity(0);
+                notConnected.setOpacity(1);
+            }
+        }
     }
 }

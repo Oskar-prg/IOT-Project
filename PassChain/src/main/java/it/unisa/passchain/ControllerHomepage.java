@@ -1,5 +1,7 @@
 package it.unisa.passchain;
 
+import it.unisa.passchain.utils.Credential;
+import it.unisa.passchain.utils.CredentialsList;
 import it.unisa.passchain.utils.Design;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +29,7 @@ public class ControllerHomepage implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Design.setSidebar(panel1, panel2, menu);
         Design.textAreaNotEditable(txtArea);
+        Design.fillTextArea(txtArea);
     }
 
     @FXML
@@ -46,6 +49,20 @@ public class ControllerHomepage implements Initializable {
     @FXML
     private void loadUpdatePage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/update.fxml"));
+        AnchorPane pane = fxmlLoader.load();
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    private void loadRemovePage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/remove.fxml"));
+        AnchorPane pane = fxmlLoader.load();
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    private void loadPinCodePage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/pinCode.fxml"));
         AnchorPane pane = fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }

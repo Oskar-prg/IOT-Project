@@ -1,6 +1,9 @@
 package it.unisa.passchain;
 
+import it.unisa.passchain.utils.Credential;
+import it.unisa.passchain.utils.CredentialsList;
 import it.unisa.passchain.utils.Design;
+import it.unisa.passchain.utils.MQTT_comunication;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,6 +11,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,11 +32,16 @@ public class ControllerAdd implements Initializable {
     @FXML
     private ImageView menu;
 
+    @FXML
+    private Text errorMsg;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Design.setSidebar(panel1, panel2, menu);
-        Design.setCredentials(webName, username, password);
+        Design.setCredentials(null, webName, username, password);
         Design.textAreaNotEditable(txtArea);
+        Design.fillTextArea(txtArea);
+        errorMsg.setOpacity(0);
     }
 
     @FXML
@@ -53,5 +63,38 @@ public class ControllerAdd implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/update.fxml"));
         AnchorPane pane = fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    private void loadRemovePage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/remove.fxml"));
+        AnchorPane pane = fxmlLoader.load();
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    private void loadPinCodePage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/pinCode.fxml"));
+        AnchorPane pane = fxmlLoader.load();
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    private void addCredential() throws MqttException {
+        if (webName.getText() != null && !webName.getText().isBlank())
+            if (password.getText() != null && !password.getText().isBlank())
+                if (username.getText() != null && !username.getText().isBlank()) {
+                    Credential credential = new Credential(webName.getText(), username.getText(), password.getText());
+                    CredentialsList credentialsList = new CredentialsList();
+                    credentialsList.addCredential(credential);
+
+                    Design.fillTextArea(txtArea);
+                    MQTT_comunication.publish("00" + credential.getName() + ","
+                            + credential.getUsername() + "," + credential.getPassword());
+
+                    errorMsg.setOpacity(0);
+                    return;
+                }
+        errorMsg.setOpacity(1);
     }
 }

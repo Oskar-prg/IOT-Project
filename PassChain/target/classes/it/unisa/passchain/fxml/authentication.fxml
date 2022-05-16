@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="497.0" prefWidth="345.0" styleClass="root" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unisa.passchain.ControllerAuthentication">
    <children>
@@ -39,7 +40,7 @@
             <Font name="System Bold" size="32.0" />
          </font>
       </Label>
-      <JFXButton fx:id="btnAuthentication" alignment="CENTER" buttonType="RAISED" layoutX="98.0" layoutY="367.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleButtonAction" prefHeight="38.0" prefWidth="146.0" ripplerFill="WHITE" styleClass="add-btn" text="Verifica" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="91.60000000000002" AnchorPane.leftAnchor="98.0" AnchorPane.rightAnchor="100.6" AnchorPane.topAnchor="367.0">
+      <JFXButton fx:id="btnAuthentication" alignment="CENTER" buttonType="RAISED" layoutX="21.0" layoutY="368.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleButtonAction" prefHeight="38.0" prefWidth="146.0" ripplerFill="WHITE" styleClass="add-btn" text="Verifica" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="90.60000000000002" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="177.6" AnchorPane.topAnchor="368.0">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
@@ -72,5 +73,28 @@
             <Font name="System Bold" size="30.0" />
          </font>
       </TextField>
+      <Text fx:id="connected" disable="true" fill="#42d767" layoutX="59.0" layoutY="119.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il dispositivo è connesso" textAlignment="CENTER" wrappingWidth="231.9832000732422">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text fx:id="notConnected" fill="#df2739" layoutX="59.0" layoutY="119.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il dispositivo non è connesso" textAlignment="CENTER" wrappingWidth="231.9832000732422">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <JFXButton alignment="CENTER" buttonType="RAISED" layoutX="184.0" layoutY="368.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#connect" prefHeight="38.0" prefWidth="146.0" ripplerFill="WHITE" styleClass="add-btn" text="Connetti" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+      <Text fx:id="pin" disable="true" fill="#df2739" layoutX="59.0" layoutY="347.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pin ERRATO!" textAlignment="CENTER" wrappingWidth="231.9832000732422">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
