@@ -70,7 +70,6 @@ last_message = b''
 
 def mainLoop():
     data = load_r_credentialsFile()
-    print(data)
     fromConnecting = True
     lcd.putstr("Welcome to \nPassChain")
     sleep(2)
@@ -121,9 +120,11 @@ def mainLoop():
             if direction == 'D':
                 continue
             
+            lcd.clear()
             lcd.putstr("> Username: ****")
             lcd.move_to(0,1)
             lcd.putstr("> Password: ****")
+            
             
             while True:
                 if not d.isConnected():
@@ -326,7 +327,7 @@ def menuList(data):
 
 # MQTT functions
 def mqtt_connection():
-    global last_message
+    global last_message, topic_pub
     lcd.clear()
     lcd.putstr("Connecting to")
     lcd.move_to(0,1)
@@ -334,6 +335,7 @@ def mqtt_connection():
     try:
       client = connect_and_subscribe()
       sleep(1)
+      client.publish(topic_pub, "Ciao mondo")
     except OSError as e:
       restart_and_reconnect()
     
