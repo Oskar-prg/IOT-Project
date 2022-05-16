@@ -73,12 +73,12 @@
             <Font name="System Bold" size="30.0" />
          </font>
       </TextField>
-      <Text fx:id="connected" disable="true" fill="#42d767" layoutX="59.0" layoutY="119.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il dispositivo è connesso" textAlignment="CENTER" wrappingWidth="231.9832000732422">
+      <Text fx:id="connected" disable="true" fill="#42d767" layoutX="44.0" layoutY="117.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connessione PassChain riuscita." textAlignment="CENTER" wrappingWidth="254.9832000732422">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Text>
-      <Text fx:id="notConnected" fill="#df2739" layoutX="59.0" layoutY="119.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il dispositivo non è connesso" textAlignment="CENTER" wrappingWidth="231.9832000732422">
+      <Text fx:id="notConnected" fill="#df2739" layoutX="47.0" layoutY="116.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il dispositivo non è connesso" textAlignment="CENTER" wrappingWidth="254.9832000732422">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
@@ -91,7 +91,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </JFXButton>
-      <Text fx:id="pin" disable="true" fill="#df2739" layoutX="59.0" layoutY="347.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pin ERRATO!" textAlignment="CENTER" wrappingWidth="231.9832000732422">
+      <Text fx:id="pin" disable="true" fill="#df2739" layoutX="59.0" layoutY="347.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il pin ERRATO!" textAlignment="CENTER" wrappingWidth="231.9832000732422">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>

@@ -1,7 +1,5 @@
 package it.unisa.passchain;
 
-import it.unisa.passchain.utils.Credential;
-import it.unisa.passchain.utils.CredentialsList;
 import it.unisa.passchain.utils.Design;
 import it.unisa.passchain.utils.MQTT_comunication;
 import javafx.fxml.FXML;
@@ -104,5 +102,4 @@ public class ControllerPinCode implements Initializable {
             }
         errorMsg.setOpacity(1);
     }
-
 }

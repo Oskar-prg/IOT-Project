@@ -125,7 +125,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </JFXButton>
-                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadAddPage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Add New" textFill="WHITE">
+                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadAddPage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Aggiungi" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -133,7 +133,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </JFXButton>
-                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadUpdatePage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Update" textFill="WHITE">
+                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadUpdatePage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Aggiorna" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -141,7 +141,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </JFXButton>
-                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadRemovePage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Delete" textFill="WHITE">
+                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadRemovePage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Rimuovi" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -149,7 +149,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </JFXButton>
-                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadPinCodePage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Set Pin code" textFill="WHITE">
+                  <JFXButton alignment="BASELINE_LEFT" onAction="#loadPinCodePage" prefHeight="38.0" prefWidth="179.0" styleClass="button" text="Modifica codice Pin" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>

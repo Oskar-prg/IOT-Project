@@ -59,13 +59,13 @@ public class Design {
         if (oldName != null){
             oldName.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
                     "-fx-text-fill: white; ");
-            oldName.setPromptText("Old name Application");
+            oldName.setPromptText("Nome originale");
         }
 
         if (webName != null){
             webName.setStyle("-fx-background-color: rgba(91, 155, 233, 0.78); " +
                     "-fx-text-fill: white; ");
-            webName.setPromptText("Name Application");
+            webName.setPromptText("Nome Applicazione");
         }
 
         if (username != null){
@@ -122,7 +122,7 @@ public class Design {
                 connected.setOpacity(1);
                 notConnected.setOpacity(0);
             } else{
-                notConnected.setText("ERROR: server MQTT.");
+                notConnected.setText("ERROR: server MQTT spento.");
                 connected.setOpacity(0);
                 notConnected.setOpacity(1);
             }

@@ -86,7 +86,7 @@ public class ControllerAuthentication implements Initializable {
                         otp7.getText() + otp8.getText() +
                         otp9.getText() + otp10.getText();
 
-                if (pinCode.compareTo(MyCallback.getPin()) != 0){
+                if (pinCode.compareTo(MyCallback.getPin()) == 0){
                     pin.setOpacity(0);
                     Stage stage = (Stage) btnAuthentication.getScene().getWindow();
                     stage.close();
@@ -102,12 +102,12 @@ public class ControllerAuthentication implements Initializable {
                     pin.setOpacity(1);
                 }
             } else {
-                notConnected.setText("Il dispositivo non è connesso.");
+                notConnected.setText("La scheda ESP32 non è connessa.");
                 connected.setOpacity(0);
                 notConnected.setOpacity(1);
             }
         } else {
-            notConnected.setText("ERROR: server MQTT.");
+            notConnected.setText("ERROR: server MQTT spento.");
             connected.setOpacity(0);
             notConnected.setOpacity(1);
         }
