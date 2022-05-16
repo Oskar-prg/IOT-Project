@@ -14,11 +14,10 @@ gc.collect()
 ssid = 'Username'
 password = 'Password'
 mqtt_server = 'IP_adress'
-#EXAMPLE IP ADDRESS
-#mqtt_server = '192.168.1.144'
+
 client_id = ubinascii.hexlify(machine.unique_id())
-topic_sub = b'notification'
-topic_pub = b'hello'
+topic_sub = b'APPcredentials'
+topic_pub = b'ESPcredentials'
 
 last_message = 0
 message_interval = 5

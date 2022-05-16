@@ -2,7 +2,7 @@ import machine
 from machine import Pin, SoftI2C, PWM
 import time
 from time import sleep
-from LCD_i2c_driver import I2cLcd
+#from LCD_i2c_driver import I2cLcd
 from simpleKeyboard import Device
 from binascii import hexlify
 import json
@@ -12,8 +12,8 @@ I2C_ADDR = 0x27
 totalRows = 2
 totalColumns = 16
 
-i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=10000)     #initializing the I2C method for ESP32
-lcd = I2cLcd(i2c, I2C_ADDR, totalRows, totalColumns)
+#i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=10000)     #initializing the I2C method for ESP32
+#lcd = I2cLcd(i2c, I2C_ADDR, totalRows, totalColumns)
 
 # BLE setup
 d = Device()
@@ -71,136 +71,131 @@ last_message = b''
 def mainLoop():
     data = load_r_credentialsFile()
     fromConnecting = True
-    lcd.putstr("Welcome to \nPassChain")
+    #lcd.putstr("Welcome to \nPassChain")
     sleep(2)
     
     while True:
-        if d.isConnected():
-            if fromConnecting:
-                connectedBle()
-                sleep(2)
-                fromConnecting = False
-                
-            lcd.clear()
-            select = menuList(data)
-            lcd.clear()
-
-            lcd.putstr("Insert pin code:")
-            lcd.move_to(0,1)
-            pinCode = ''
-            direction = ''
-
-            while True:
-                direction = read_keypad()
-
-                if direction == 'D':
-                    break
-
-                if direction is not None and direction != 'C':
-                    pinCode += direction
-
-                lcd.move_to(0,1)
-                lcd.putstr(pinCode)
-
-                if direction == 'C':
-                    if pinCode == data['pin']:
-                        break
-                    else:
-                        lcd.clear()
-                        lcd.putstr('Wrong pin!')
-                        lcd.move_to(0,1)
-                        lcd.putstr("Try again.")
-                        sleep(2)
-                        lcd.clear()
-                        lcd.putstr("Insert pin code:")
-                        pinCode = ''
-                
-                time.sleep_ms(160)
-
-            if direction == 'D':
-                continue
-            
-            lcd.clear()
-            lcd.putstr("> Username: ****")
-            lcd.move_to(0,1)
-            lcd.putstr("> Password: ****")
-            
-            
-            while True:
-                if not d.isConnected():
-                    break
-                
-                direction = read_keypad()
-
-                if direction == 'D':
-                    break
-    
-                if direction == buttonDown:
-                    lcd.clear()
-                    lcd.putstr("Writing")
-                    lcd.move_to(0,1)
-                    lcd.putstr("password.")
-                    time.sleep_ms(250)
-                    lcd.putstr(".")
-                    time.sleep_ms(250)
-                    lcd.putstr(".")
-                    d.send_string(data['credentials'][select]['password'])
-                    time.sleep_ms(250)
-                    lcd.putstr(".")
-                    time.sleep_ms(500)
-                    lcd.clear()
-                    lcd.putstr("> Username: ****")
-                    lcd.move_to(0,1)
-                    lcd.putstr("> Password: ****")
-                    
-                if direction == buttonUp:
-                    lcd.clear()
-                    lcd.putstr("Writing")
-                    lcd.move_to(0,1)
-                    lcd.putstr("username.")
-                    time.sleep_ms(250)
-                    lcd.putstr(".")
-                    time.sleep_ms(250)
-                    lcd.putstr(".")
-                    d.send_string(data['credentials'][select]['username'])
-                    time.sleep_ms(250)
-                    lcd.putstr(".")
-                    time.sleep_ms(500)
-                    lcd.clear()
-                    lcd.putstr("> Username: ****")
-                    lcd.move_to(0,1)
-                    lcd.putstr("> Password: ****")
-            
-        else:
-            d.advertise()
-            connectingBle()
-            fromConnecting = True
-            sleep(2)
+        mqtt_connection(data)
+#         if d.isConnected():
+#             if fromConnecting:
+#                 connectedBle()
+#                 sleep(2)
+#                 fromConnecting = False
+#                 
+#             lcd.clear()
+#             select = menuList(data)
+#             lcd.clear()
+# 
+#             lcd.putstr("Insert pin code:")
+#             lcd.move_to(0,1)
+#             pinCode = ''
+#             direction = ''
+# 
+#             while True:
+#                 direction = read_keypad()
+# 
+#                 if direction == 'D':
+#                     break
+# 
+#                 if direction is not None and direction != 'C':
+#                     pinCode += direction
+# 
+#                 lcd.move_to(0,1)
+#                 lcd.putstr(pinCode)
+# 
+#                 if direction == 'C':
+#                     if pinCode == data['pin']:
+#                         break
+#                     else:
+#                         lcd.clear()
+#                         lcd.putstr('Wrong pin!')
+#                         lcd.move_to(0,1)
+#                         lcd.putstr("Try again.")
+#                         sleep(2)
+#                         lcd.clear()
+#                         lcd.putstr("Insert pin code:")
+#                         pinCode = ''
+#                 
+#                 time.sleep_ms(160)
+# 
+#             if direction == 'D':
+#                 continue
+#             
+#             lcd.clear()
+#             lcd.putstr("> Username: ****")
+#             lcd.move_to(0,1)
+#             lcd.putstr("> Password: ****")
+#             
+#             
+#             while True:
+#                 if not d.isConnected():
+#                     break
+#                 
+#                 direction = read_keypad()
+# 
+#                 if direction == 'D':
+#                     break
+#     
+#                 if direction == buttonDown:
+#                     lcd.clear()
+#                     lcd.putstr("Writing")
+#                     lcd.move_to(0,1)
+#                     lcd.putstr("password.")
+#                     time.sleep_ms(250)
+#                     lcd.putstr(".")
+#                     time.sleep_ms(250)
+#                     lcd.putstr(".")
+#                     d.send_string(data['credentials'][select]['password'])
+#                     time.sleep_ms(250)
+#                     lcd.putstr(".")
+#                     time.sleep_ms(500)
+#                     lcd.clear()
+#                     lcd.putstr("> Username: ****")
+#                     lcd.move_to(0,1)
+#                     lcd.putstr("> Password: ****")
+#                     
+#                 if direction == buttonUp:
+#                     lcd.clear()
+#                     lcd.putstr("Writing")
+#                     lcd.move_to(0,1)
+#                     lcd.putstr("username.")
+#                     time.sleep_ms(250)
+#                     lcd.putstr(".")
+#                     time.sleep_ms(250)
+#                     lcd.putstr(".")
+#                     d.send_string(data['credentials'][select]['username'])
+#                     time.sleep_ms(250)
+#                     lcd.putstr(".")
+#                     time.sleep_ms(500)
+#                     lcd.clear()
+#                     lcd.putstr("> Username: ****")
+#                     lcd.move_to(0,1)
+#                     lcd.putstr("> Password: ****")
+#             
+#         else:
+#             d.advertise()
+#             connectingBle()
+#             fromConnecting = True
+#             sleep(2)
             
 
 # BLE functions
 def connectingBle():
-    lcd.clear()
-    lcd.putstr("Connecting.")
-    print("connecting.")
+#     lcd.clear()
+#     lcd.putstr("Connecting.")
     time.sleep_ms(250)
-    lcd.putstr(".")
-    print(".")
+#     lcd.putstr(".")
     time.sleep_ms(250)
-    lcd.putstr(".")
-    print(".")
+#     lcd.putstr(".")
     time.sleep_ms(250)
-    lcd.putstr(".")
-    print(".")
+#     lcd.putstr(".")
     time.sleep_ms(250)
     return
 
 def connectedBle():
-    lcd.clear()
-    lcd.putstr("The device is\n")
-    print("The device is\n")
-    print("connected!")
-    lcd.putstr("connected !")
+#     lcd.clear()
+#     lcd.putstr("The device is\n")
+#     lcd.putstr("connected !")
     time.sleep_ms(250)
     return
 
@@ -234,7 +229,7 @@ def read_keypad():
         for col in range(4):
             key = scan(row, col)
             if key == KEY_DOWN:
-                print("Key Pressed", keys[row][col])
+                #print("Key Pressed", keys[row][col])
                 last_key_press = keys[row][col]
     return last_key_press
 
@@ -249,20 +244,20 @@ def load_w_credentialsFile(data):
         json.dump(data, credentials) 
  
 def write_credentialsFile(data, name, username, password):
-    if name is not None and not name:
-        if username is not None and not username:
-            if password is not None and not password:
+    if name is not None:
+        if username is not None:
+            if password is not None:
                 new_object = {"name": name,
                               "username": username,
                               "password": password
                               }
-                data["credentials"].append(new_object)   
+                data["credentials"].append(new_object)
                 load_w_credentialsFile(data)
                 return True
     return False
   
 def update_credentialsFile(data, name, newName, username, password):
-    if name is not None and not name:
+    if name is not None:
         for i in range(0, len(data['credentials'])):
             if data['credentials'][i]['name'] == name:
                 
@@ -278,9 +273,16 @@ def update_credentialsFile(data, name, newName, username, password):
                 load_w_credentialsFile(data)
                 return True
     return False
+
+def update_pinCodeFile(data, newPin):
+    if newPin is not None:
+        data['pin'] = newPin
+        load_w_credentialsFile(data)
+        return True
+    return False
  
 def remove_credentialsFile(data, name):
-    if name is not None and not name:
+    if name is not None:
         for i in range(0, len(data['credentials'])):
             if data['credentials'][i]['name'] == name:
                 del data['credentials'][i]
@@ -291,77 +293,100 @@ def remove_credentialsFile(data, name):
 
 
 # menu credentials list
-def menuList(data):
-    pos = 0
-    lcd.putstr("Authentication")
-    lcd.move_to(0,1)
-    lcd.putstr('> ' + data['credentials'][pos]['name'])
-
-    while(True): 
-        direction = read_keypad()
-        
-        if(direction == buttonDown) and (pos + 1 < len(data['credentials'])):
-            lcd.clear()
-            lcd.putstr(data['credentials'][pos]['name'])
-            lcd.move_to(0,1)
-            pos += 1
-            lcd.putstr('> ' + data['credentials'][pos]['name'])
-        
-        if (direction == buttonUp) and (pos - 1 >= 0):
-            lcd.clear()
-            pos -= 1
-            lcd.putstr('> ' +data['credentials'][pos]['name'])
-            lcd.move_to(0,1)
-            lcd.putstr(data['credentials'][pos+1]['name'])
-            
-        if (direction == '*'):
-            mqtt_connection()
-            pos = 0
-            lcd.putstr("Authentication")
-            lcd.move_to(0,1)
-            lcd.putstr('> ' + data['credentials'][pos]['name'])
-        
-        if read_keypad() == 'C':
-            return pos
+# def menuList(data):
+#     pos = 0
+# #     lcd.putstr("Authentication")
+# #     lcd.move_to(0,1)
+# #     lcd.putstr('> ' + data['credentials'][pos]['name'])
+# 
+#     while(True): 
+#         direction = read_keypad()
+#         
+#         if(direction == buttonDown) and (pos + 1 < len(data['credentials'])):
+#             lcd.clear()
+#             lcd.putstr(data['credentials'][pos]['name'])
+#             lcd.move_to(0,1)
+#             pos += 1
+#             lcd.putstr('> ' + data['credentials'][pos]['name'])
+#         
+#         if (direction == buttonUp) and (pos - 1 >= 0):
+#             lcd.clear()
+#             pos -= 1
+#             lcd.putstr('> ' +data['credentials'][pos]['name'])
+#             lcd.move_to(0,1)
+#             lcd.putstr(data['credentials'][pos+1]['name'])
+#             
+#         if (direction == '*'):
+#             mqtt_connection()
+#             pos = 0
+#             lcd.putstr("Authentication")
+#             lcd.move_to(0,1)
+#             lcd.putstr('> ' + data['credentials'][pos]['name'])
+#         
+#         if read_keypad() == 'C':
+#             return pos
 
 
 # MQTT functions
-def mqtt_connection():
+def mqtt_connection(data):
     global last_message, topic_pub
-    lcd.clear()
-    lcd.putstr("Connecting to")
-    lcd.move_to(0,1)
-    lcd.putstr("PassChain App")
+#     lcd.clear()
+#     lcd.putstr("Connecting to")
+#     lcd.move_to(0,1)
+#     lcd.putstr("PassChain App")
     try:
       client = connect_and_subscribe()
+      client.publish(topic_pub, json.dumps(data))
       sleep(1)
-      client.publish(topic_pub, "Ciao mondo")
     except OSError as e:
       restart_and_reconnect()
     
-    lcd.clear()
-    lcd.putstr("Connected to")
-    lcd.move_to(0,1)
-    lcd.putstr("PassChain App!")
+#     lcd.clear()
+#     lcd.putstr("Connected to")
+#     lcd.move_to(0,1)
+#     lcd.putstr("PassChain App!")
     
     while True:
+        if last_message == b'reconnect':
+            client.publish(topic_pub, json.dumps(data))
+            last_message = b''
+            
         direction = read_keypad()
         try:
             client.check_msg()
-            if last_message != b'':
-                print(last_message)
+            if last_message != b'' and last_message != b'reconnect':
+                msg = last_message.decode("utf-8")
+                
+                if msg[0:2] == "00":
+                    credential = msg[2:].split(",")
+                    write_credentialsFile(data, credential[0], credential[1], credential[2])
+                    client.publish(topic_pub, json.dumps(data))
+                    
+                elif msg[0:2] == "01":
+                    credential = msg[2:].split(",")
+                    update_credentialsFile(data, credential[0], credential[1], credential[2], credential[3])
+                    client.publish(topic_pub, json.dumps(data))
+                    
+                elif msg[0:2] == "02":
+                    remove_credentialsFile(data, msg[2:])
+                    client.publish(topic_pub, json.dumps(data))
+                    
+                elif msg[0:2] == "03":
+                    update_pinCodeFile(data, msg[2:])
+                    client.publish(topic_pub, json.dumps(data))
+                    
                 last_message = b''
+                
         except OSError as e:
             restart_and_reconnect()
             
         if direction == 'D':
+            client.publish(topic_pub, 'disconnect')
             client.disconnect()
             return
 
 def sub_cb(topic, msg):
     global last_message
-    print((topic, msg))
-    
     last_message = msg
     if topic == b'notification' and msg == b'received':
         print('ESP received hello message')
