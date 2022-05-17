@@ -1,6 +1,5 @@
 package it.unisa.passchain.utils;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -15,8 +14,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTT_comunication {
     private static MqttAsyncClient myClient;
-    private static String topic_sub = "ESPcredentials";
-    private static String topic_pub = "APPcredentials";
+    private static final String topic_sub = "ESPcredentials";
+    private static final String topic_pub = "APPcredentials";
 
     public static void connect() throws MqttException, UnknownHostException {
         myClient = new MqttAsyncClient("tcp://" + InetAddress.getLocalHost().getHostAddress() + ":1883",
@@ -49,7 +48,7 @@ public class MQTT_comunication {
     }
 
     public static void publish(String msg) throws MqttException {
-        MqttMessage message = null;
+        MqttMessage message;
         message = new MqttMessage(msg.getBytes(StandardCharsets.UTF_8));
         int qos = 0;
         message.setQos(qos);

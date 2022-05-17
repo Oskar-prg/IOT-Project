@@ -18,7 +18,7 @@ public class PassChain extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/authentication.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Unlocker IoT");
+        stage.setTitle("PassChain IoT");
         stage.setScene(scene);
         stage.setResizable(false);
         InputStream in = getClass().getResourceAsStream("/it/unisa/passchain/assets/icon.png");

@@ -1,6 +1,3 @@
-# A simple keypad Demo
-# Kevin McAleer
-# May 2021
 
 from machine import Pin, Timer
 from time import sleep

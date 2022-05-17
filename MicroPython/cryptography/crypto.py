@@ -1,6 +1,6 @@
 
 def convert(s):
-    # converts a list into a string
+    """converts a list into a string"""
     new = ""
     for x in s:
         new += x
@@ -8,14 +8,13 @@ def convert(s):
 
 
 def decode(encoded_text, salt):
-    # decode the contents of encrypted text, using the salt
+    """decode the contents of encrypted text, using the salt"""
     plaintext = []
     count = 0
     for character in encoded_text:
         temp_string = ord(character) - ord(salt[count])
         if temp_string < 0:
             temp_string += 255
-        # print(temp_string)
         
         plaintext.append(chr(temp_string))
         if count < len(salt)-1:
@@ -27,7 +26,7 @@ def decode(encoded_text, salt):
 
 
 def encode(plaintext, salt):
-    # encodes plain text using a salt key
+    """encodes plain text using a salt key"""
     secure_string = []
     count = 0
     for character in plaintext:

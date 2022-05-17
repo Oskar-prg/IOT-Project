@@ -1,4 +1,3 @@
-# Complete project details at https://RandomNerdTutorials.com
 
 import time
 from umqttsimple import MQTTClient
@@ -11,9 +10,14 @@ esp.osdebug(None)
 import gc
 gc.collect()
 
-ssid = 'Username'
-password = 'Password'
-mqtt_server = 'IP_adress'
+ssid = 'nome wifi'
+password = 'password'
+mqtt_server = 'IP Address'
+
+#EXAMPLE IP ADDRESS
+#ssid = 'iPhone di Gennaro'
+#password = 'connettitipls'
+#mqtt_server = '172.20.10.10'
 
 client_id = ubinascii.hexlify(machine.unique_id())
 topic_sub = b'APPcredentials'

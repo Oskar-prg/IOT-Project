@@ -1,6 +1,5 @@
 package it.unisa.passchain;
 
-import it.unisa.passchain.utils.Credential;
 import it.unisa.passchain.utils.CredentialsList;
 import it.unisa.passchain.utils.Design;
 import it.unisa.passchain.utils.MQTT_comunication;

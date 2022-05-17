@@ -1,1 +1,0 @@
-{"pin": "d``jd`dd`r", "credentials": [{"username": "¥s¦", "name": "Instagram", "password": "£¬{s"}, {"name": "Facebook", "password": "qs", "username": "¡¡¡¥£¢"}, {"name": "Twitter", "password": "qy{q|}", "username": "y¡¡x¥«"}]}

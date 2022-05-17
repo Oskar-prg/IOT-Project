@@ -7,6 +7,7 @@ from simpleKeyboard import Device
 from binascii import hexlify
 import json
 from buzzer_music import music
+from crypto import encode, decode
 
 # LCD setup
 I2C_ADDR = 0x27
@@ -48,30 +49,6 @@ last_message = b''
 song = '8 A5 1 1;6 B5 1 1;4 G5 1 1;2 A5 1 1;1 A5 1 1;0 A5 1 1'
 systemBeep = '0 F6 1 43'
 
-# Complete project details at https://RandomNerdTutorials.com
-        
-#     if (time.time() - last_message) > message_interval:
-#       msg = b'Hello #%d' % counter
-#       client.publish(topic_pub, msg)
-#       last_message = time.time()
-#       counter += 1
-  
-    
-    
-#     for row in range(4):
-#                 for col in range(4):
-#                     key = scan(row, col)
-#                     if key == KEY_DOWN:
-#                         print("Key Pressed", keys[row][col])
-#                         last_key_press = keys[row][col]
-#                         lcd.putstr(str(last_key_press))
-#                         time.sleep_ms(500)
-
-# askPin = True
-# if askPin:
-#                 lcd.clear()
-#                 lcd.putstr("Inserisci pin:\n")
-#                 askPin = False
 
 def mainLoop():
     data = load_r_credentialsFile()
@@ -81,8 +58,7 @@ def mainLoop():
     for i in range(0,30):
         print(mySong.tick())
         sleep(0.04)
-    
-    
+        
     sleep(2)
     
     while True:
@@ -114,7 +90,7 @@ def mainLoop():
                 lcd.putstr(pinCode)
 
                 if direction == 'C':
-                    if pinCode == data['pin']:
+                    if pinCode == decode(data['pin'], "2005202209"):
                         break
                     else:
                         lcd.clear()
@@ -136,7 +112,6 @@ def mainLoop():
             lcd.move_to(0,1)
             lcd.putstr("> Password: ****")
             
-            
             while True:
                 if not d.isConnected():
                     break
@@ -155,7 +130,7 @@ def mainLoop():
                     lcd.putstr(".")
                     time.sleep_ms(250)
                     lcd.putstr(".")
-                    d.send_string(data['credentials'][select]['password'])
+                    d.send_string(decode(data['credentials'][select]['password'], "2005202209"))
                     time.sleep_ms(250)
                     lcd.putstr(".")
                     time.sleep_ms(500)
@@ -173,7 +148,7 @@ def mainLoop():
                     lcd.putstr(".")
                     time.sleep_ms(250)
                     lcd.putstr(".")
-                    d.send_string(data['credentials'][select]['username'])
+                    d.send_string(decode(data['credentials'][select]['username'], "2005202209"))
                     time.sleep_ms(250)
                     lcd.putstr(".")
                     time.sleep_ms(500)
@@ -218,7 +193,6 @@ def init():
 
 def scan(row, col):
     """ scan the keypad """
-
     # set the current column to high
     row_pins[row].value(1)
     key = None
@@ -239,7 +213,6 @@ def read_keypad():
         for col in range(4):
             key = scan(row, col)
             if key == KEY_DOWN:
-                #print("Key Pressed", keys[row][col])
                 mySong = music(systemBeep, pins=[Pin(18)])
                 for i in range(5):
                     mySong.tick()
@@ -351,7 +324,7 @@ def mqtt_connection(data):
     lcd.putstr("PassChain App")
     try:
       client = connect_and_subscribe()
-      client.publish(topic_pub, json.dumps(data))
+      client.publish(topic_pub, (json.dumps(data)).encode())
       sleep(1)
     except OSError as e:
       restart_and_reconnect()
@@ -363,9 +336,9 @@ def mqtt_connection(data):
     
     while True:
         if last_message == b'reconnect':
-            client.publish(topic_pub, json.dumps(data))
+            client.publish(topic_pub, (json.dumps(data)).encode())
             last_message = b''
-            
+                        
         direction = read_keypad()
         try:
             client.check_msg()
@@ -375,20 +348,20 @@ def mqtt_connection(data):
                 if msg[0:2] == "00":
                     credential = msg[2:].split(",")
                     write_credentialsFile(data, credential[0], credential[1], credential[2])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 elif msg[0:2] == "01":
                     credential = msg[2:].split(",")
                     update_credentialsFile(data, credential[0], credential[1], credential[2], credential[3])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 elif msg[0:2] == "02":
                     remove_credentialsFile(data, msg[2:])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 elif msg[0:2] == "03":
                     update_pinCodeFile(data, msg[2:])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 last_message = b''
                 

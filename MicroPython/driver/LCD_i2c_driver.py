@@ -148,8 +148,8 @@ class I2cLcd:
 
 
     def write_init(self, setting):
-        # Scrive un particolare comando ("setting") al display LCD.
-        # Questa funzione è usata solo durante l'iniziallizzazione dell'LCD.
+        """Scrive un particolare comando ("setting") al display LCD.
+        Questa funzione è usata solo durante l'iniziallizzazione dell'LCD."""
         byte = ((setting >> 4) & 0x0f) << SHIFT_DATA
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
         self.i2c.writeto(self.i2c_addr, bytes([byte]))
@@ -157,7 +157,7 @@ class I2cLcd:
 
         
     def write_command(self, cmd):
-        # Scrive un comando sul display LCD.
+        """Scrive un comando sul display LCD."""
         byte = ((self.backlight << SHIFT_BACKLIGHT) |
                 (((cmd >> 4) & 0x0f) << SHIFT_DATA))
         self.i2c.writeto(self.i2c_addr, bytes([byte | MASK_E]))
@@ -172,7 +172,7 @@ class I2cLcd:
         gc.collect()
 
     def write_data(self, data):
-        # Scrive dati sull'LCD.
+        """Scrive dati sull'LCD."""
         byte = (MASK_RS |
                 (self.backlight << SHIFT_BACKLIGHT) |
                 (((data >> 4) & 0x0f) << SHIFT_DATA))

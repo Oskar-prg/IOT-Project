@@ -1,7 +1,5 @@
 package it.unisa.passchain;
 
-import it.unisa.passchain.utils.Credential;
-import it.unisa.passchain.utils.CredentialsList;
 import it.unisa.passchain.utils.Design;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

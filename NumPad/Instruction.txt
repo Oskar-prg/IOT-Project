@@ -1,5 +1,0 @@
-Guardare il video(spiega come funzionano i numpad e come usarli):
-https://www.youtube.com/watch?v=EpvVYyKwfjs
-
-Questa è il codice:
-https://github.com/kevinmcaleer/keypad
