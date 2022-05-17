@@ -14,7 +14,7 @@ public class Crypto {
 
             if (num < 0)
                 num -= 255;
-            secure_string.append(num);
+            secure_string.append((char)num);
 
             if (count < salt.length() - 1)
                 count += 1;
@@ -35,7 +35,7 @@ public class Crypto {
 
             if (temp_string < 0)
                 temp_string += 255;
-            plaintext.append(temp_string);
+            plaintext.append((char) temp_string);
 
             if (count < salt.length() - 1)
                 count += 1;
