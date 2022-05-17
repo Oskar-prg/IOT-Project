@@ -1,3 +1,4 @@
+
 def convert(s):
     # converts a list into a string
     new = ""
@@ -5,19 +6,6 @@ def convert(s):
         new += x
     return new
 
-def from_csv(filename):
-    # read in a CSV file and output the contents as a string
-    f = open(filename,'r')
-    file_text = f.readline()
-    string_array = []
-    file_text.strip("'")
-    file_text.strip(',')
-    for character in file_text:
-        if character != ',' and "'":
-            string_array.append(character)
-    f.close()
-    print("Read in CSV file:", filename)
-    return convert(string_array)
 
 def decode(encoded_text, salt):
     # decode the contents of encrypted text, using the salt
@@ -36,3 +24,19 @@ def decode(encoded_text, salt):
             count = 0
         
     return convert(plaintext)
+
+
+def encode(plaintext, salt):
+    # encodes plain text using a salt key
+    secure_string = []
+    count = 0
+    for character in plaintext:
+        num = ord(character) + ord(salt[count])
+        if num > 255:
+            num -= 255
+        secure_string.append(chr(num))
+        if count < len(salt)-1:
+            count += 1
+        else:
+            count = 0
+    return convert(secure_string)
