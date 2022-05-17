@@ -96,6 +96,9 @@ public class ControllerRemove implements Initializable {
                 errorMsg.setOpacity(1);
             }
         }
-        else errorMsg.setOpacity(1);
+        else {
+            errorMsg.setText("Riempi tutti i campi.");
+            errorMsg.setOpacity(1);
+        }
     }
 }

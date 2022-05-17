@@ -53,7 +53,7 @@
             </VBox>
          </children>
       </AnchorPane>
-      <Label layoutX="280.0" layoutY="65.0" prefHeight="39.0" prefWidth="297.0" text="Modifica il Pin code" textFill="WHITE" AnchorPane.bottomAnchor="396.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="223.0" AnchorPane.topAnchor="65.0">
+      <Label layoutX="280.0" layoutY="65.0" prefHeight="39.0" prefWidth="297.0" text="Modifica il codice Pin" textFill="WHITE" AnchorPane.bottomAnchor="396.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="223.0" AnchorPane.topAnchor="65.0">
          <font>
             <Font name="System Bold" size="27.0" />
          </font>
@@ -159,6 +159,11 @@
          </children>
       </AnchorPane>
       <Text fx:id="errorMsg" fill="#df2739" layoutX="327.0" layoutY="131.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inserisci il nome." wrappingWidth="203.53399658203125">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="okMsg" fill="#42d767" layoutX="337.0" layoutY="141.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Codice Pin salvato." wrappingWidth="203.53399658203125">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

@@ -36,7 +36,7 @@ public class ControllerPinCode implements Initializable {
     private ImageView menu;
 
     @FXML
-    private Text errorMsg;
+    private Text errorMsg, okMsg;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -84,22 +84,37 @@ public class ControllerPinCode implements Initializable {
 
     @FXML
     private void updatePin() throws MqttException {
-        if (oldpin.getText() != null && !oldpin.getText().isBlank())
-            if (newpin.getText() != null && !newpin.getText().isBlank()){
-                errorMsg.setOpacity(0);
-                if (oldpin.getText().length() == 10 && !oldpin.getText().isBlank()) {
+        if (oldpin.getText() != null && !oldpin.getText().isBlank()) {
+            if (newpin.getText() != null && !newpin.getText().isBlank()) {
+                if (oldpin.getText().length() == 10 && newpin.getText().length() == 10) {
                     for (char c : chart) {
                         if (oldpin.getText().contains(String.valueOf(c))) {
-                            errorMsg.setOpacity(1);
-                            return;
+                            if(newpin.getText().contains(String.valueOf(c))){
+                                okMsg.setOpacity(0);
+                                errorMsg.setOpacity(1);
+                                errorMsg.setText("Pin sbagliato.");
+                                return;
+                            }
                         }
                     }
+                    errorMsg.setOpacity(0);
+                    okMsg.setOpacity(1);
                     MyCallback.updatePin(oldpin.getText(), newpin.getText());
                     MQTT_comunication.publish("03" + newpin.getText());
-                }
-                else
+                } else {
+                    okMsg.setOpacity(0);
                     errorMsg.setOpacity(1);
+                    errorMsg.setText("Pin sbagliato.");
+                }
+            } else {
+                okMsg.setOpacity(0);
+                errorMsg.setOpacity(1);
+                errorMsg.setText("Riempi tutti i campi.");
             }
-        errorMsg.setOpacity(1);
+        } else {
+            okMsg.setOpacity(0);
+            errorMsg.setOpacity(1);
+            errorMsg.setText("Riempi tutti i campi.");
+        }
     }
 }

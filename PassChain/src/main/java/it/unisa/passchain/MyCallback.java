@@ -71,7 +71,9 @@ public class MyCallback implements MqttCallback {
   public static boolean updatePin(String oldpin, String newpin){
     if (getPin() != null){
       if (oldpin.compareTo(getPin()) == 0){
-        object.getJSONObject("pin").put("pin", newpin);
+        object.remove("pin");
+        object.put("pin", newpin);
+        return true;
       }
     }
     return false;
