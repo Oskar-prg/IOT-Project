@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="PassChain" target="17" />
+      <module name="PassChain" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

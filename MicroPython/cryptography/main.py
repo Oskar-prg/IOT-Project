@@ -7,6 +7,7 @@ from simpleKeyboard import Device
 from binascii import hexlify
 import json
 from buzzer_music import music
+from crypto import encode, decode
 
 # LCD setup
 I2C_ADDR = 0x27
@@ -114,7 +115,8 @@ def mainLoop():
                 lcd.putstr(pinCode)
 
                 if direction == 'C':
-                    if pinCode == data['pin']:
+                    if pinCode == decode(data['pin'], "2005202209"):
+                        #if pinCode == data['pin']:
                         break
                     else:
                         lcd.clear()
@@ -155,7 +157,8 @@ def mainLoop():
                     lcd.putstr(".")
                     time.sleep_ms(250)
                     lcd.putstr(".")
-                    d.send_string(data['credentials'][select]['password'])
+                    d.send_string(decode(data['credentials'][select]['password'], "2005202209"))
+                    #d.send_string(data['credentials'][select]['password'])
                     time.sleep_ms(250)
                     lcd.putstr(".")
                     time.sleep_ms(500)
@@ -173,7 +176,8 @@ def mainLoop():
                     lcd.putstr(".")
                     time.sleep_ms(250)
                     lcd.putstr(".")
-                    d.send_string(data['credentials'][select]['username'])
+                    d.send_string(decode(data['credentials'][select]['username'], "2005202209"))
+                    #d.send_string(data['credentials'][select]['username'])
                     time.sleep_ms(250)
                     lcd.putstr(".")
                     time.sleep_ms(500)
@@ -351,7 +355,7 @@ def mqtt_connection(data):
     lcd.putstr("PassChain App")
     try:
       client = connect_and_subscribe()
-      client.publish(topic_pub, json.dumps(data))
+      client.publish(topic_pub, (json.dumps(data)).encode())
       sleep(1)
     except OSError as e:
       restart_and_reconnect()
@@ -363,8 +367,10 @@ def mqtt_connection(data):
     
     while True:
         if last_message == b'reconnect':
-            client.publish(topic_pub, json.dumps(data))
+            client.publish(topic_pub, (json.dumps(data)).encode())
             last_message = b''
+            
+        print("Ultimo messaggio: " + last_message.decode("utf-8"))
             
         direction = read_keypad()
         try:
@@ -375,20 +381,20 @@ def mqtt_connection(data):
                 if msg[0:2] == "00":
                     credential = msg[2:].split(",")
                     write_credentialsFile(data, credential[0], credential[1], credential[2])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 elif msg[0:2] == "01":
                     credential = msg[2:].split(",")
                     update_credentialsFile(data, credential[0], credential[1], credential[2], credential[3])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 elif msg[0:2] == "02":
                     remove_credentialsFile(data, msg[2:])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 elif msg[0:2] == "03":
                     update_pinCodeFile(data, msg[2:])
-                    client.publish(topic_pub, json.dumps(data))
+                    client.publish(topic_pub, (json.dumps(data)).encode())
                     
                 last_message = b''
                 
