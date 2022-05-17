@@ -1,7 +1,9 @@
 package it.unisa.passchain.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +49,8 @@ public class MQTT_comunication {
     }
 
     public static void publish(String msg) throws MqttException {
-        MqttMessage message = new MqttMessage(msg.getBytes());
+        MqttMessage message = null;
+        message = new MqttMessage(msg.getBytes(StandardCharsets.UTF_8));
         int qos = 0;
         message.setQos(qos);
         message.setRetained(false);

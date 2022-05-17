@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class CredentialsList {
 
-    private final ArrayList<Credential> credentials;
+    private ArrayList<Credential> credentials;
 
     public CredentialsList(){
        credentials = new ArrayList<>();
@@ -34,6 +34,9 @@ public class CredentialsList {
     }
 
     public ArrayList<Credential> getCredentials() {
+        credentials = new ArrayList<>();
+        for (int i = 0; i < MyCallback.getSizeJson(); i++)
+            credentials.add(i, MyCallback.getCredential(i));
         return credentials;
     }
 }

@@ -1,9 +1,6 @@
 package it.unisa.passchain;
 
-import it.unisa.passchain.utils.Credential;
-import it.unisa.passchain.utils.CredentialsList;
-import it.unisa.passchain.utils.Design;
-import it.unisa.passchain.utils.MQTT_comunication;
+import it.unisa.passchain.utils.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -95,8 +92,8 @@ public class ControllerUpdate implements Initializable {
                             Design.fillTextArea(txtArea);
 
                             MQTT_comunication.publish("01" + oldName.getText() + ","
-                                    + webName.getText() + "," + username.getText() + "," +
-                                    password.getText());
+                                    + webName.getText() + "," + Crypto.encode(username.getText(), "2005202209") + "," +
+                                    Crypto.encode(password.getText(), "2005202209"));
 
                             errorMsg.setOpacity(0);
                         } else {

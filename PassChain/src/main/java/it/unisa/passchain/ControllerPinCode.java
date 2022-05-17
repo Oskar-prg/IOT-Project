@@ -1,5 +1,6 @@
 package it.unisa.passchain;
 
+import it.unisa.passchain.utils.Crypto;
 import it.unisa.passchain.utils.Design;
 import it.unisa.passchain.utils.MQTT_comunication;
 import javafx.fxml.FXML;
@@ -100,7 +101,7 @@ public class ControllerPinCode implements Initializable {
                     errorMsg.setOpacity(0);
                     okMsg.setOpacity(1);
                     MyCallback.updatePin(oldpin.getText(), newpin.getText());
-                    MQTT_comunication.publish("03" + newpin.getText());
+                    MQTT_comunication.publish("03" + Crypto.encode(newpin.getText(), "2005202209"));
                 } else {
                     okMsg.setOpacity(0);
                     errorMsg.setOpacity(1);

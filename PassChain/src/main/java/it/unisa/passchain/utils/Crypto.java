@@ -10,9 +10,9 @@ public class Crypto {
         int count = 0;
         for (int i = 0; i < plaintext.length(); i++) {
             char character = plaintext.charAt(i);
-            int num = (int) character - (int) salt.charAt(count);
+            int num = (int) character + (int) salt.charAt(count);
 
-            if (num < 0)
+            if (num > 255)
                 num -= 255;
             secure_string.append((char)num);
 

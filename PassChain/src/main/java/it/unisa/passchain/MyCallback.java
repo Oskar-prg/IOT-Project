@@ -36,7 +36,7 @@ public class MyCallback implements MqttCallback {
       return null;
 
     Credential credential = new Credential();
-    credential.setName(Crypto.decode(object.getJSONArray("credentials").getJSONObject(pos).getString("name"), "2005202209"));
+    credential.setName(object.getJSONArray("credentials").getJSONObject(pos).getString("name"));
     credential.setUsername(Crypto.decode(object.getJSONArray("credentials").getJSONObject(pos).getString("username"), "2005202209"));
     credential.setPassword(Crypto.decode(object.getJSONArray("credentials").getJSONObject(pos).getString("password"), "2005202209"));
     return credential;
