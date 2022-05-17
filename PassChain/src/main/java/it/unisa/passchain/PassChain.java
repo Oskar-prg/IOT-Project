@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownHostException;
 
 public class PassChain extends Application {
@@ -20,7 +21,8 @@ public class PassChain extends Application {
         stage.setTitle("Unlocker IoT");
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.getIcons().add(new Image("D:\\Progetti GitHub\\Progetto-IoT\\PassChain\\src\\main\\resources\\it\\unisa\\passchain\\assets\\icon.png"));
+        InputStream in = getClass().getResourceAsStream("/it/unisa/passchain/assets/icon.png");
+        stage.getIcons().add(new Image(in));
         stage.show();
     }
 
