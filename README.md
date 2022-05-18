@@ -36,9 +36,9 @@
   Authors
 </h2>
 <ul dir="auto">
+<li><strong>Oskar Szuba</strong>          - <em>Developer</em>   - <a href="https://github.com/Oskar-prg)">Oskar-prg</a></li>
 <li><strong>Alberto Montefusco</strong>   - <em>Developer</em>   - <a href="https://github.com/Alberto-00">Alberto-00</a></li>
 <li><strong>Gennaro Spina</strong>        - <em>Developer</em>   - <a href="https://github.com/Galiem">Galiem</a></li>
-<li><strong>Oskar Szuba</strong>          - <em>Developer</em>   - <a href="https://github.com/Oskar-prg)">Oskar-prg</a></li>
 </ul>
 <h2 dir="auto">
   <a id="user-content-documentation" class="anchor" aria-hidden="true" href="#documentation">
