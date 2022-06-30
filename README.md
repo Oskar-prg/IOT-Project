@@ -76,6 +76,6 @@
   </a>
   Contributors
   </h1>
-<a href="https://github.com/Oskar-prg/Progetto-IoT/graphs/contributors">
+<a href="https://github.com/Oskar-prg/IOT-Project/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Alberto-00/Progetto-IoT" />
 </a>
